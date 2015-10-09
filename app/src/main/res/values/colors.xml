@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="light_grey">#858585</color>
+    <color name="app_grey_clicked">#cfcfcf</color>
+    <color name="app_grey">#e7e7e7</color>
+</resources>

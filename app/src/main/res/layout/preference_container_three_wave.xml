@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_marginTop="10dp"
+    >
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    >
+
+    <TextView
+        android:id="@+id/threeWaveTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="3 Waves to open "
+        android:textSize="18sp"
+
+        />
+
+    <LinearLayout
+        android:id="@+id/threeWaveContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_toRightOf="@id/threeWaveTitle"
+        android:background="@drawable/app_change_selector"
+        android:orientation="horizontal"
+        android:padding="8dp"
+
+        >
+
+        <ImageView
+            android:id="@+id/threeWaveLogo"
+            android:layout_width="23dp"
+            android:layout_height="23dp" />
+
+        <TextView
+            android:id="@+id/threeWaveAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+
+            />
+
+
+    </LinearLayout>
+</RelativeLayout>
+</android.support.v7.widget.CardView>
