@@ -34,6 +34,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -120,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             serviceToggle.setChecked(pref.getBoolean(SERVICE_STARTED, true));
             helpShown = false;
         }
+        initAd();
+    }
+
+    private void initAd() {
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(WaveDetector.DEVICE_ID).build();
+        mAdView.loadAd(adRequest);
     }
 
 
