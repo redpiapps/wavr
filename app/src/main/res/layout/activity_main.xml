@@ -1,62 +1,125 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-
-    <android.support.v7.widget.CardView
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".MainActivity">
 
-        <RelativeLayout
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:padding="15dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/switchContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"
-                android:text="Wavr Shortcuts"
-                android:textSize="18sp"
+                android:padding="15dp">
 
-                />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center_vertical"
+                    android:text="Wavr Shortcuts"
+                    android:textSize="18sp"
 
-            <Switch
-                android:id="@+id/serviceToggler"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true" />
+                    />
 
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+                <Switch
+                    android:id="@+id/serviceToggler"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightest_grey"></View>
+                <RelativeLayout
+                    android:id="@+id/helpTitleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Help"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/closeHelp"
+                        android:layout_width="30dp"
+                        android:visibility="gone"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerHorizontal="true"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+                </RelativeLayout>
 
 
-    <include layout="@layout/preference_container_two_wave"  ></include>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="Wave twice to open the selected app"
-        android:textColor="@color/light_grey"
-        />
+            </LinearLayout>
 
-    <include layout="@layout/preference_container_three_wave" ></include>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="Wave thrice to open the selected app"
-        android:textColor="@color/light_grey"
-        />
+        </android.support.v7.widget.CardView>
+
+        <include
+            layout="@layout/help_layout"
+            ></include>
 
 
-</LinearLayout>
+
+
+
+        <include layout="@layout/preference_container_one_wave"></include>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Wave once when screen is locked to unlock it. Also unlocks your screen when you remove it from your pocket. "
+            android:textColor="@color/light_grey" />
+
+
+        <include layout="@layout/preference_container_two_wave"></include>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Wave twice to open the selected app"
+            android:textColor="@color/light_grey" />
+
+        <include layout="@layout/preference_container_three_wave"></include>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Wave thrice to open the selected app"
+            android:textColor="@color/light_grey" />
+
+
+    </LinearLayout>
+</ScrollView>

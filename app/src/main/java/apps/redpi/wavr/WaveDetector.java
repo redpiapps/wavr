@@ -3,6 +3,7 @@ package apps.redpi.wavr;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.KeyguardManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +14,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
 import android.os.Handler;
 
 /**
@@ -25,9 +29,9 @@ import android.os.Handler;
  */
 public class WaveDetector extends IntentService implements SensorEventListener {
     private SharedPreferences pref;
-    private  SensorManager mSensorManager;
-    private  Sensor mSensor;
-    private int sensorChangeCount=0;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private int sensorChangeCount = 0;
     private TimerTask task;
     private boolean firstWave;
     private boolean secondWave;
@@ -48,9 +52,9 @@ public class WaveDetector extends IntentService implements SensorEventListener {
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        pref =getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_MULTI_PROCESS);
+        pref = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_MULTI_PROCESS);
 
-        while (true){
+        while (true) {
 
         }
 
@@ -61,12 +65,12 @@ public class WaveDetector extends IntentService implements SensorEventListener {
     public void onSensorChanged(SensorEvent sensorEvent) {
         sensorChangeCount++;
 
-        if(sensorChangeCount==2){
-            firstWave=true;
+        if (sensorChangeCount == 2) {
+            firstWave = true;
             //Toast.makeText(this,"2 Waved detected",Toast.LENGTH_SHORT).show();
         }
-        if(sensorChangeCount==4){
-            secondWave=true;
+        if (sensorChangeCount == 4) {
+            secondWave = true;
             //Toast.makeText(this,"2 Waved detected",Toast.LENGTH_SHORT).show();
         } else if (sensorChangeCount == 6) {
             thirdWave = true;
@@ -76,7 +80,15 @@ public class WaveDetector extends IntentService implements SensorEventListener {
 
         if (task == null) {
             task = new ResetCount();
-            timer.schedule(task, 1500);
+            if (isScreenLocked()) {
+                if((sensorChangeCount%2)==0)
+                timer.schedule(task, 1);
+                else{
+                    task=null;
+                }
+            } else {
+                timer.schedule(task, 1500);
+            }
         }
     }
 
@@ -99,7 +111,7 @@ public class WaveDetector extends IntentService implements SensorEventListener {
                         if (!TextUtils.isEmpty(packageName) && !packageName.equals(MainActivity.NONE)) {
                             Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
                             startActivity(launchIntent);
-                            Toast.makeText(getApplicationContext(), "3 Waved detected", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "Opening app...", Toast.LENGTH_SHORT).show();
 
                         }
                     }
@@ -110,38 +122,55 @@ public class WaveDetector extends IntentService implements SensorEventListener {
                     @Override
                     public void run() {
                         String packageName = pref.getString(MainActivity.TWO_WAVE, "");
-                        if(!TextUtils.isEmpty(packageName) && !packageName.equals(MainActivity.NONE)) {
+                        if (!TextUtils.isEmpty(packageName) && !packageName.equals(MainActivity.NONE)) {
                             Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
                             startActivity(launchIntent);
+                            //Toast.makeText(getApplicationContext(), "Opening app...", Toast.LENGTH_SHORT).show();
+
                         }
 
                     }
                 });
-            }else if(firstWave){
+            } else if (firstWave) {
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        KeyguardManager myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-                        if( myKM.inKeyguardRestrictedInputMode()) {
-                            PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-                            long l = SystemClock.uptimeMillis();
-                            powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"").acquire();
+
+                        if (isScreenLocked() && pref.getInt(MainActivity.ONE_WAVE,0)==0) {
+                            PowerManager.WakeLock screenLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
+                                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+                            screenLock.acquire();
+
+                            screenLock.release();
+
+
                         } else {
                             //it is not locked
                         }
-                        Toast.makeText(getApplicationContext(), "1 Waved detected", Toast.LENGTH_SHORT).show();
 
                     }
                 });
             }
-            thirdWave=false;
-            secondWave=false;
-            firstWave=false;
+            thirdWave = false;
+            secondWave = false;
+            firstWave = false;
         }
     }
+
+    private boolean isScreenLocked() {
+        KeyguardManager myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        if (myKM.inKeyguardRestrictedInputMode()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
     @Override
-    public void onTaskRemoved(Intent rootIntent){
+    public void onTaskRemoved(Intent rootIntent) {
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
 
@@ -154,7 +183,6 @@ public class WaveDetector extends IntentService implements SensorEventListener {
 
         super.onTaskRemoved(rootIntent);
     }
-
 
 
     @Override
