@@ -3,7 +3,6 @@ package apps.redpi.wavr;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.KeyguardManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,27 +11,25 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.provider.AlarmClock;
 import android.text.TextUtils;
-import android.widget.Toast;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.squareup.seismic.ShakeDetector;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.os.Handler;
-
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-
 /**
  * Created by Nikhil on 09-10-2015.
  */
-public class WaveDetector extends IntentService implements SensorEventListener {
+public class WaveDetector extends IntentService implements SensorEventListener,ShakeDetector.Listener  {
     private SharedPreferences pref;
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -44,7 +41,7 @@ public class WaveDetector extends IntentService implements SensorEventListener {
     private Handler handler;
     private Timer timer;
     private InterstitialAd interstitial;
-    public static final String DEVICE_ID = "6939DE83F9E193E4E1E72040604B38E2";
+    public static final String DEVICE_ID = "238A7894A33CFA10EC340868FE7F242D";
     private Random random;
 
 
@@ -82,6 +79,11 @@ public class WaveDetector extends IntentService implements SensorEventListener {
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
         pref = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_MULTI_PROCESS);
+
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        ShakeDetector sd = new ShakeDetector(this);
+        sd.start(sensorManager);
+
         initAd();
         while (true) {
 
@@ -126,6 +128,23 @@ public class WaveDetector extends IntentService implements SensorEventListener {
 
     }
 
+    @Override
+    public void hearShake() {
+        int shakePref = pref.getInt(MainActivity.SHAKE, 0);
+        if(shakePref == 0){
+            Intent i = new Intent(AlarmClock.ACTION_SET_ALARM);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }else if(shakePref==1){
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }else{
+            //do nothing
+        }
+
+    }
+
     private class ResetCount extends TimerTask {
 
         @Override
@@ -140,9 +159,12 @@ public class WaveDetector extends IntentService implements SensorEventListener {
                         if (!TextUtils.isEmpty(packageName) && !packageName.equals(MainActivity.NONE)) {
                             Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
                             startActivity(launchIntent);
+                            //Toast.makeText(getApplicationContext(), "Opening " + pref.getString(MainActivity.THREE_WAVE_APP_NAME,"app"), Toast.LENGTH_SHORT).show();
+
                             //Toast.makeText(getApplicationContext(), "Opening app...", Toast.LENGTH_SHORT).show();
-                            if(random.nextInt(3)==2)
-                            requestNewInterstitial();
+                            if(random.nextInt(3)==2) {
+                                //requestNewInterstitial();
+                            }
 
                         }
                     }
@@ -156,9 +178,10 @@ public class WaveDetector extends IntentService implements SensorEventListener {
                         if (!TextUtils.isEmpty(packageName) && !packageName.equals(MainActivity.NONE)) {
                             Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
                             startActivity(launchIntent);
-                            //Toast.makeText(getApplicationContext(), "Opening app...", Toast.LENGTH_SHORT).show();
-                            if(random.nextInt(3)==2)
-                                requestNewInterstitial();
+                            //Toast.makeText(getApplicationContext(), "Opening " + pref.getString(MainActivity.TWO_WAVE_APP_NAME,"app"), Toast.LENGTH_SHORT).show();
+                            if(random.nextInt(3)==2) {
+                                //requestNewInterstitial();
+                            }
                         }
 
                     }

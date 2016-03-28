@@ -10,6 +10,7 @@
         ads:adUnitId="@string/banner_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"></com.google.android.gms.ads.AdView>
     <ScrollView
@@ -115,20 +116,22 @@
 
             <include layout="@layout/preference_container_two_wave"></include>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="Wave twice to open the selected app"
-                android:textColor="@color/light_grey" />
+
 
             <include layout="@layout/preference_container_three_wave"></include>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="Wave thrice to open the selected app"
+                android:text="Wave 2 or 3 times to open an app"
+                android:textColor="@color/light_grey" />
+
+            <include layout="@layout/preference_container_shake"></include>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Shake the phone to open an app"
                 android:textColor="@color/light_grey" />
 
 
